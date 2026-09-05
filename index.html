@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FART PHONK</title>
+
+```
+<title>FART PHONK</title>
 
 <style>
     * {
@@ -65,7 +67,7 @@
         width: 110%;
         height: 110%;
 
-        background-image: url("image.jpg");
+        background-image: url("image.jpeg");
         background-size: cover;
         background-position: center;
 
@@ -95,7 +97,7 @@
 
         pointer-events: none;
 
-        opacity: 0.55;
+        opacity: 0;
 
         mix-blend-mode: screen;
 
@@ -123,7 +125,6 @@
 
         filter: blur(45px);
 
-        transform: scale(1);
         will-change: transform, opacity, filter;
     }
 
@@ -137,7 +138,7 @@
 
         pointer-events: none;
 
-        opacity: 0.25;
+        opacity: 0;
 
         mix-blend-mode: screen;
 
@@ -152,12 +153,14 @@
 
         filter: blur(12px);
 
-        animation: rotateRays 8s linear infinite;
+        animation:
+            rotateRays 8s linear infinite;
 
         will-change: transform, opacity;
     }
 
     @keyframes rotateRays {
+
         from {
             transform: rotate(0deg);
         }
@@ -165,6 +168,7 @@
         to {
             transform: rotate(360deg);
         }
+
     }
 
     /* =========================
@@ -221,6 +225,7 @@
         padding: 17px 34px;
 
         border: 2px solid rgba(255, 255, 255, 0.85);
+
         border-radius: 999px;
 
         color: white;
@@ -230,6 +235,7 @@
             sans-serif;
 
         font-size: 17px;
+
         font-weight: 700;
 
         letter-spacing: 2px;
@@ -256,6 +262,48 @@
         50% {
             transform: scale(1.05);
         }
+
+    }
+
+    /* =========================
+       COUNTDOWN
+    ========================= */
+
+    .countdown {
+        position: fixed;
+        inset: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        z-index: 15;
+
+        color: white;
+
+        font-family:
+            Arial,
+            sans-serif;
+
+        font-size: 80px;
+
+        font-weight: 900;
+
+        opacity: 0;
+
+        pointer-events: none;
+
+        text-shadow:
+            0 0 20px rgba(255,255,255,0.8),
+            0 0 50px rgba(255,0,255,0.7);
+
+        transition:
+            opacity 0.2s ease;
+
+    }
+
+    .countdown.show {
+        opacity: 1;
     }
 
     /* =========================
@@ -269,25 +317,33 @@
             font-size: 15px;
         }
 
+        .countdown {
+            font-size: 65px;
+        }
+
         .disco {
             filter: blur(30px);
         }
 
         .rays {
-            opacity: 0.18;
+            opacity: 0;
         }
+
     }
+
 </style>
+```
 
 </head>
 
 <body>
 
+```
 <div class="scene">
 
     <img
         class="image"
-        src="image.jpg"
+        src="image.jpeg"
         alt=""
     >
 
@@ -313,10 +369,19 @@
 
 </div>
 
+
 <div
     class="flash"
     id="flash">
 </div>
+
+
+<div
+    class="countdown"
+    id="countdown">
+    2
+</div>
+
 
 <div
     class="start"
@@ -327,6 +392,7 @@
     </div>
 
 </div>
+
 
 <audio
     id="music"
@@ -347,6 +413,9 @@
 
     const start =
         document.getElementById("start");
+
+    const countdown =
+        document.getElementById("countdown");
 
     const image =
         document.querySelector(".image");
@@ -379,19 +448,19 @@
 
 
     /* =========================
-       START
+       USER ENTER
     ========================= */
 
     document.addEventListener(
         "click",
-        startMusic,
+        enterPage,
         {
             once: true
         }
     );
 
 
-    async function startMusic() {
+    async function enterPage() {
 
         if (started) {
             return;
@@ -399,11 +468,59 @@
 
         started = true;
 
+        /*
+         * حذف صفحه شروع
+         */
+
         start.classList.add("hidden");
+
+
+        /*
+         * Countdown
+         */
+
+        countdown.classList.add("show");
+
+        countdown.textContent = "2";
+
+
+        await wait(1000);
+
+
+        countdown.textContent = "1";
+
+
+        await wait(1000);
+
+
+        countdown.classList.remove("show");
+
+
+        /*
+         * شروع موزیک
+         */
 
         try {
 
             await music.play();
+
+        } catch (error) {
+
+            console.error(
+                "Audio playback failed:",
+                error
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Audio Analyzer
+         */
+
+        try {
 
             audioContext =
                 new (
@@ -411,52 +528,88 @@
                     window.webkitAudioContext
                 )();
 
+
             analyser =
                 audioContext.createAnalyser();
 
+
             analyser.fftSize = 512;
+
 
             analyser.smoothingTimeConstant =
                 0.72;
+
 
             frequencyData =
                 new Uint8Array(
                     analyser.frequencyBinCount
                 );
 
+
             source =
                 audioContext.createMediaElementSource(
                     music
                 );
 
-            source.connect(analyser);
+
+            source.connect(
+                analyser
+            );
+
 
             analyser.connect(
                 audioContext.destination
             );
 
+
+            /*
+             * فعال کردن افکت‌ها
+             */
+
+            disco.style.opacity = "0.35";
+
+            rays.style.opacity = "0.2";
+
+
             animate();
 
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Visualizer failed:",
+                error
+            );
 
         }
+
     }
 
 
     /* =========================
-       AUDIO ANALYSIS
+       WAIT
+    ========================= */
+
+    function wait(ms) {
+
+        return new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    ms
+                )
+        );
+
+    }
+
+
+    /* =========================
+       BASS
     ========================= */
 
     function getBass() {
 
         let bass = 0;
 
-        /*
-         * فرکانس‌های پایین
-         * برای تشخیص Kick / Bass
-         */
 
         for (
             let i = 1;
@@ -464,17 +617,25 @@
             i++
         ) {
 
-            bass += frequencyData[i];
+            bass +=
+                frequencyData[i];
 
         }
 
+
         return bass / 17;
+
     }
 
+
+    /* =========================
+       MID
+    ========================= */
 
     function getMid() {
 
         let mid = 0;
+
 
         for (
             let i = 18;
@@ -482,11 +643,14 @@
             i++
         ) {
 
-            mid += frequencyData[i];
+            mid +=
+                frequencyData[i];
 
         }
 
+
         return mid / 62;
+
     }
 
 
@@ -496,11 +660,15 @@
 
     function animate() {
 
-        requestAnimationFrame(animate);
+        requestAnimationFrame(
+            animate
+        );
+
 
         if (!analyser) {
             return;
         }
+
 
         analyser.getByteFrequencyData(
             frequencyData
@@ -510,19 +678,17 @@
         const bass =
             getBass();
 
+
         const mid =
             getMid();
 
-
-        /*
-         * Normalize
-         */
 
         const beat =
             Math.min(
                 bass / 150,
                 1
             );
+
 
         const middle =
             Math.min(
@@ -539,17 +705,19 @@
             1.02 +
             beat * 0.075;
 
+
         image.style.transform =
             `scale(${zoom})`;
 
 
         /* =====================
-           DISCO LIGHT
+           DISCO
         ===================== */
 
         disco.style.opacity =
             0.25 +
             beat * 0.75;
+
 
         disco.style.transform =
             `
@@ -557,17 +725,19 @@
             rotate(${performance.now() * 0.015}deg)
             `;
 
+
         disco.style.filter =
             `blur(${45 - beat * 20}px)`;
 
 
         /* =====================
-           LIGHT RAYS
+           RAYS
         ===================== */
 
         rays.style.opacity =
             0.15 +
             middle * 0.5;
+
 
         rays.style.transform =
             `scale(${1 + beat * 0.2})`;
@@ -580,32 +750,39 @@
         const rgbAmount =
             beat * 22;
 
+
         rgbRed.style.transform =
             `translateX(${-rgbAmount}px)`;
+
 
         rgbBlue.style.transform =
             `translateX(${rgbAmount}px)`;
 
+
         rgbRed.style.opacity =
             beat * 0.35;
+
 
         rgbBlue.style.opacity =
             beat * 0.35;
 
 
         /* =====================
-           STRONG BEAT FLASH
+           FLASH
         ===================== */
 
         const now =
             performance.now();
+
 
         if (
             beat > 0.82 &&
             now - lastStrongBeat > 100
         ) {
 
-            lastStrongBeat = now;
+            lastStrongBeat =
+                now;
+
 
             flash.style.opacity =
                 Math.min(
@@ -628,5 +805,7 @@
     }
 
 </script>
+```
+
 </body>
 </html>
