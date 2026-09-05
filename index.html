@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
+
 <title>FART PHONK</title>
 
 <style>
+
     * {
         margin: 0;
         padding: 0;
@@ -25,23 +26,27 @@
 
     body {
         position: relative;
-        cursor: pointer;
+        cursor: default;
         user-select: none;
     }
 
-    /* =========================
-       MAIN IMAGE
-    ========================= */
+
+    /* =====================================
+       GORILLA IMAGE
+    ===================================== */
 
     .scene {
         position: fixed;
         inset: 0;
+
         overflow: hidden;
+
         background: #000;
     }
 
     .image {
         position: absolute;
+
         inset: -5%;
 
         width: 110%;
@@ -52,47 +57,82 @@
 
         display: block;
 
-        transform: scale(1.02);
-        will-change: transform, filter;
+        opacity: 0;
+
+        transform:
+            scale(1.08);
+
+        filter:
+            brightness(0.7);
+
+        transition:
+            opacity 0.8s ease,
+            filter 0.8s ease;
+
+        will-change:
+            transform,
+            filter;
     }
 
-    /* =========================
-       RGB SPLIT
-    ========================= */
+    .image.visible {
+        opacity: 1;
+
+        filter:
+            brightness(1);
+    }
+
+
+    /* =====================================
+       RGB GLITCH
+    ===================================== */
 
     .rgb {
         position: absolute;
+
         inset: -5%;
 
         width: 110%;
         height: 110%;
 
-        background-image: url("image.jpeg");
+        background-image:
+            url("image.jpeg");
+
         background-size: cover;
         background-position: center;
 
         opacity: 0;
+
         pointer-events: none;
 
         mix-blend-mode: screen;
 
-        will-change: transform, opacity;
+        will-change:
+            transform,
+            opacity;
     }
 
     .rgb.red {
-        filter: sepia(1) saturate(8) hue-rotate(-35deg);
+        filter:
+            sepia(1)
+            saturate(8)
+            hue-rotate(-35deg);
     }
 
     .rgb.blue {
-        filter: sepia(1) saturate(8) hue-rotate(150deg);
+        filter:
+            sepia(1)
+            saturate(8)
+            hue-rotate(150deg);
     }
 
-    /* =========================
+
+    /* =====================================
        DISCO LIGHT
-    ========================= */
+    ===================================== */
 
     .disco {
         position: absolute;
+
         inset: -30%;
 
         pointer-events: none;
@@ -102,38 +142,48 @@
         mix-blend-mode: screen;
 
         background:
+
             radial-gradient(
                 circle at 15% 20%,
                 rgba(255, 0, 0, 0.9),
                 transparent 20%
             ),
+
             radial-gradient(
                 circle at 85% 15%,
                 rgba(0, 255, 255, 0.9),
                 transparent 20%
             ),
+
             radial-gradient(
                 circle at 80% 80%,
                 rgba(255, 0, 255, 0.9),
                 transparent 20%
             ),
+
             radial-gradient(
                 circle at 15% 85%,
                 rgba(0, 255, 100, 0.9),
                 transparent 20%
             );
 
-        filter: blur(45px);
+        filter:
+            blur(45px);
 
-        will-change: transform, opacity, filter;
+        will-change:
+            transform,
+            opacity,
+            filter;
     }
 
-    /* =========================
+
+    /* =====================================
        DISCO RAYS
-    ========================= */
+    ===================================== */
 
     .rays {
         position: absolute;
+
         inset: -50%;
 
         pointer-events: none;
@@ -143,149 +193,95 @@
         mix-blend-mode: screen;
 
         background:
+
             repeating-conic-gradient(
                 from 0deg,
-                rgba(255, 0, 0, 0.35) 0deg 8deg,
-                rgba(0, 255, 255, 0.35) 8deg 16deg,
-                rgba(255, 0, 255, 0.35) 16deg 24deg,
-                transparent 24deg 35deg
+
+                rgba(255, 0, 0, 0.35)
+                0deg 8deg,
+
+                rgba(0, 255, 255, 0.35)
+                8deg 16deg,
+
+                rgba(255, 0, 255, 0.35)
+                16deg 24deg,
+
+                transparent
+                24deg 35deg
             );
 
-        filter: blur(12px);
+        filter:
+            blur(12px);
 
         animation:
             rotateRays 8s linear infinite;
 
-        will-change: transform, opacity;
+        will-change:
+            transform,
+            opacity;
     }
+
 
     @keyframes rotateRays {
 
         from {
-            transform: rotate(0deg);
+            transform:
+                rotate(0deg);
         }
 
         to {
-            transform: rotate(360deg);
+            transform:
+                rotate(360deg);
         }
 
     }
 
-    /* =========================
-       BEAT FLASH
-    ========================= */
+
+    /* =====================================
+       FLASH
+    ===================================== */
 
     .flash {
         position: fixed;
+
         inset: 0;
 
-        background: white;
+        background: #fff;
 
         opacity: 0;
 
         pointer-events: none;
 
-        z-index: 5;
+        z-index: 10;
 
         mix-blend-mode: screen;
     }
 
-    /* =========================
-       START SCREEN
-    ========================= */
 
-    .start {
-        position: fixed;
-        inset: 0;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        z-index: 20;
-
-        background:
-            radial-gradient(
-                circle,
-                rgba(0, 0, 0, 0.05),
-                rgba(0, 0, 0, 0.55)
-            );
-
-        transition:
-            opacity 0.5s ease,
-            visibility 0.5s ease;
-    }
-
-    .start.hidden {
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    .start-button {
-        padding: 17px 34px;
-
-        border: 2px solid rgba(255, 255, 255, 0.85);
-
-        border-radius: 999px;
-
-        color: white;
-
-        font-family:
-            Arial,
-            sans-serif;
-
-        font-size: 17px;
-
-        font-weight: 700;
-
-        letter-spacing: 2px;
-
-        background:
-            rgba(0, 0, 0, 0.25);
-
-        backdrop-filter: blur(12px);
-
-        box-shadow:
-            0 0 25px rgba(255, 255, 255, 0.25);
-
-        animation:
-            pulseButton 1.8s ease-in-out infinite;
-    }
-
-    @keyframes pulseButton {
-
-        0%,
-        100% {
-            transform: scale(1);
-        }
-
-        50% {
-            transform: scale(1.05);
-        }
-
-    }
-
-    /* =========================
+    /* =====================================
        COUNTDOWN
-    ========================= */
+    ===================================== */
 
     .countdown {
+
         position: fixed;
+
         inset: 0;
 
         display: flex;
+
         align-items: center;
         justify-content: center;
 
-        z-index: 15;
+        z-index: 30;
 
-        color: white;
+        color: #fff;
 
         font-family:
             Arial,
             sans-serif;
 
-        font-size: 80px;
+        font-size: 120px;
 
         font-weight: 900;
 
@@ -294,73 +290,137 @@
         pointer-events: none;
 
         text-shadow:
-            0 0 20px rgba(255,255,255,0.8),
-            0 0 50px rgba(255,0,255,0.7);
 
-        transition:
-            opacity 0.2s ease;
+            0 0 20px
+            rgba(255,255,255,0.9),
+
+            0 0 50px
+            rgba(255,0,255,0.8),
+
+            0 0 100px
+            rgba(0,255,255,0.7);
 
     }
+
 
     .countdown.show {
+
         opacity: 1;
+
+        animation:
+            countdownPop
+            0.9s ease-out
+            forwards;
+
     }
 
-    /* =========================
+
+    @keyframes countdownPop {
+
+        0% {
+
+            transform:
+                scale(1.8)
+                rotate(-5deg);
+
+            opacity: 0;
+
+        }
+
+        30% {
+
+            opacity: 1;
+
+        }
+
+        70% {
+
+            transform:
+                scale(1)
+                rotate(0deg);
+
+            opacity: 1;
+
+        }
+
+        100% {
+
+            transform:
+                scale(0.7);
+
+            opacity: 0;
+
+        }
+
+    }
+
+
+    /* =====================================
        MOBILE
-    ========================= */
+    ===================================== */
 
     @media (max-width: 600px) {
 
-        .start-button {
-            padding: 15px 28px;
-            font-size: 15px;
-        }
-
         .countdown {
-            font-size: 65px;
+
+            font-size: 90px;
+
         }
 
         .disco {
-            filter: blur(30px);
+
+            filter:
+                blur(30px);
+
         }
 
         .rays {
+
             opacity: 0;
+
         }
 
     }
 
 </style>
-```
+
 
 </head>
 
 <body>
 
-```
+
+<!-- =====================================
+     IMAGE
+====================================== -->
+
 <div class="scene">
 
     <img
         class="image"
+        id="image"
         src="image.jpeg"
         alt=""
     >
+
 
     <div
         class="rgb red"
         id="rgbRed">
     </div>
 
+
     <div
         class="rgb blue"
         id="rgbBlue">
     </div>
 
+
     <div
         class="disco"
         id="disco">
     </div>
+
 
     <div
         class="rays"
@@ -370,34 +430,34 @@
 </div>
 
 
+<!-- =====================================
+     FLASH
+====================================== -->
+
 <div
     class="flash"
     id="flash">
 </div>
 
 
+<!-- =====================================
+     COUNTDOWN
+====================================== -->
+
 <div
     class="countdown"
     id="countdown">
-    2
 </div>
 
 
-<div
-    class="start"
-    id="start">
-
-    <div class="start-button">
-        ▶ TAP TO START
-    </div>
-
-</div>
-
+<!-- =====================================
+     MUSIC
+====================================== -->
 
 <audio
     id="music"
-    loop
-    preload="auto">
+    preload="auto"
+    loop>
 
     <source
         src="FART%20PHONK.mp3"
@@ -408,107 +468,206 @@
 
 <script>
 
-    const music =
-        document.getElementById("music");
-
-    const start =
-        document.getElementById("start");
+    const image =
+        document.getElementById(
+            "image"
+        );
 
     const countdown =
-        document.getElementById("countdown");
+        document.getElementById(
+            "countdown"
+        );
 
-    const image =
-        document.querySelector(".image");
+    const music =
+        document.getElementById(
+            "music"
+        );
 
     const disco =
-        document.getElementById("disco");
+        document.getElementById(
+            "disco"
+        );
 
     const rays =
-        document.getElementById("rays");
+        document.getElementById(
+            "rays"
+        );
 
     const flash =
-        document.getElementById("flash");
+        document.getElementById(
+            "flash"
+        );
 
     const rgbRed =
-        document.getElementById("rgbRed");
+        document.getElementById(
+            "rgbRed"
+        );
 
     const rgbBlue =
-        document.getElementById("rgbBlue");
+        document.getElementById(
+            "rgbBlue"
+        );
 
 
     let audioContext = null;
+
     let analyser = null;
+
     let source = null;
 
     let frequencyData = null;
 
-    let started = false;
-
     let lastStrongBeat = 0;
 
 
-    /* =========================
-       USER ENTER
-    ========================= */
+    /* =====================================
+       PAGE LOAD
+    ====================================== */
 
-    document.addEventListener(
-        "click",
-        enterPage,
-        {
-            once: true
-        }
+    window.addEventListener(
+        "load",
+        startSequence
     );
 
 
-    async function enterPage() {
-
-        if (started) {
-            return;
-        }
-
-        started = true;
+    async function startSequence() {
 
         /*
-         * حذف صفحه شروع
+         * جلوگیری از نمایش عکس
          */
 
-        start.classList.add("hidden");
+        image.classList.remove(
+            "visible"
+        );
 
 
         /*
          * Countdown
          */
 
-        countdown.classList.add("show");
-
-        countdown.textContent = "2";
-
+        await showNumber("3");
 
         await wait(1000);
 
 
-        countdown.textContent = "1";
-
+        await showNumber("2");
 
         await wait(1000);
 
 
-        countdown.classList.remove("show");
+        await showNumber("1");
+
+        await wait(1000);
+
+
+        /*
+         * نمایش گوریل
+         */
+
+        image.classList.add(
+            "visible"
+        );
 
 
         /*
          * شروع موزیک
          */
 
+        await startMusic();
+
+    }
+
+
+    /* =====================================
+       COUNTDOWN
+    ====================================== */
+
+    function showNumber(number) {
+
+        return new Promise(
+            resolve => {
+
+                countdown.textContent =
+                    number;
+
+                countdown.classList.remove(
+                    "show"
+                );
+
+
+                /*
+                 * Force reflow
+                 */
+
+                void countdown.offsetWidth;
+
+
+                countdown.classList.add(
+                    "show"
+                );
+
+
+                setTimeout(
+                    resolve,
+                    1000
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       WAIT
+    ====================================== */
+
+    function wait(ms) {
+
+        return new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    ms
+                )
+        );
+
+    }
+
+
+    /* =====================================
+       START MUSIC
+    ====================================== */
+
+    async function startMusic() {
+
         try {
+
+            /*
+             * تلاش برای پخش خودکار
+             */
 
             await music.play();
 
-        } catch (error) {
+        }
 
-            console.error(
-                "Audio playback failed:",
-                error
+        catch (error) {
+
+            console.log(
+                "Autoplay blocked."
+            );
+
+            /*
+             * اگر مرورگر اجازه نداد،
+             * با اولین کلیک کاربر شروع می‌شود.
+             */
+
+            document.addEventListener(
+                "click",
+                startMusicAfterClick,
+                {
+                    once: true
+                }
             );
 
             return;
@@ -516,9 +675,46 @@
         }
 
 
-        /*
-         * Audio Analyzer
-         */
+        setupVisualizer();
+
+    }
+
+
+    /* =====================================
+       FALLBACK CLICK
+    ====================================== */
+
+    async function startMusicAfterClick() {
+
+        try {
+
+            await music.play();
+
+            setupVisualizer();
+
+        }
+
+        catch (error) {
+
+            console.error(
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =====================================
+       AUDIO ANALYZER
+    ====================================== */
+
+    function setupVisualizer() {
+
+        if (analyser) {
+            return;
+        }
+
 
         try {
 
@@ -533,7 +729,8 @@
                 audioContext.createAnalyser();
 
 
-            analyser.fftSize = 512;
+            analyser.fftSize =
+                512;
 
 
             analyser.smoothingTimeConstant =
@@ -566,17 +763,23 @@
              * فعال کردن افکت‌ها
              */
 
-            disco.style.opacity = "0.35";
+            disco.style.opacity =
+                "0.35";
 
-            rays.style.opacity = "0.2";
+
+            rays.style.opacity =
+                "0.2";
 
 
             animate();
 
-        } catch (error) {
+
+        }
+
+        catch (error) {
 
             console.error(
-                "Visualizer failed:",
+                "Visualizer error:",
                 error
             );
 
@@ -585,26 +788,9 @@
     }
 
 
-    /* =========================
-       WAIT
-    ========================= */
-
-    function wait(ms) {
-
-        return new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    ms
-                )
-        );
-
-    }
-
-
-    /* =========================
+    /* =====================================
        BASS
-    ========================= */
+    ====================================== */
 
     function getBass() {
 
@@ -628,9 +814,9 @@
     }
 
 
-    /* =========================
+    /* =====================================
        MID
-    ========================= */
+    ====================================== */
 
     function getMid() {
 
@@ -654,9 +840,9 @@
     }
 
 
-    /* =========================
-       VISUALIZER
-    ========================= */
+    /* =====================================
+       ANIMATION
+    ====================================== */
 
     function animate() {
 
@@ -697,9 +883,9 @@
             );
 
 
-        /* =====================
+        /* =================================
            IMAGE ZOOM
-        ===================== */
+        ================================= */
 
         const zoom =
             1.02 +
@@ -710,9 +896,9 @@
             `scale(${zoom})`;
 
 
-        /* =====================
-           DISCO
-        ===================== */
+        /* =================================
+           DISCO LIGHT
+        ================================= */
 
         disco.style.opacity =
             0.25 +
@@ -720,9 +906,12 @@
 
 
         disco.style.transform =
+
             `
             scale(${1 + beat * 0.35})
-            rotate(${performance.now() * 0.015}deg)
+            rotate(
+                ${performance.now() * 0.015}deg
+            )
             `;
 
 
@@ -730,9 +919,9 @@
             `blur(${45 - beat * 20}px)`;
 
 
-        /* =====================
+        /* =================================
            RAYS
-        ===================== */
+        ================================= */
 
         rays.style.opacity =
             0.15 +
@@ -743,9 +932,9 @@
             `scale(${1 + beat * 0.2})`;
 
 
-        /* =====================
+        /* =================================
            RGB GLITCH
-        ===================== */
+        ================================= */
 
         const rgbAmount =
             beat * 22;
@@ -767,9 +956,9 @@
             beat * 0.35;
 
 
-        /* =====================
-           FLASH
-        ===================== */
+        /* =================================
+           STRONG BEAT FLASH
+        ================================= */
 
         const now =
             performance.now();
@@ -790,11 +979,14 @@
                     0.35
                 );
 
-        } else {
+        }
+
+        else {
 
             flash.style.opacity =
                 Math.max(
                     0,
+
                     parseFloat(
                         flash.style.opacity || 0
                     ) - 0.04
@@ -805,7 +997,7 @@
     }
 
 </script>
-```
+
 
 </body>
 </html>
