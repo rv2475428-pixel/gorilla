@@ -1,61 +1,632 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FART PHONK</title>
 
-    <title>My Page</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+    }
+
+    body {
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    /* =========================
+       MAIN IMAGE
+    ========================= */
+
+    .scene {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        background: #000;
+    }
+
+    .image {
+        position: absolute;
+        inset: -5%;
+
+        width: 110%;
+        height: 110%;
+
+        object-fit: cover;
+        object-position: center;
+
+        display: block;
+
+        transform: scale(1.02);
+        will-change: transform, filter;
+    }
+
+    /* =========================
+       RGB SPLIT
+    ========================= */
+
+    .rgb {
+        position: absolute;
+        inset: -5%;
+
+        width: 110%;
+        height: 110%;
+
+        background-image: url("image.jpg");
+        background-size: cover;
+        background-position: center;
+
+        opacity: 0;
+        pointer-events: none;
+
+        mix-blend-mode: screen;
+
+        will-change: transform, opacity;
+    }
+
+    .rgb.red {
+        filter: sepia(1) saturate(8) hue-rotate(-35deg);
+    }
+
+    .rgb.blue {
+        filter: sepia(1) saturate(8) hue-rotate(150deg);
+    }
+
+    /* =========================
+       DISCO LIGHT
+    ========================= */
+
+    .disco {
+        position: absolute;
+        inset: -30%;
+
+        pointer-events: none;
+
+        opacity: 0.55;
+
+        mix-blend-mode: screen;
+
+        background:
+            radial-gradient(
+                circle at 15% 20%,
+                rgba(255, 0, 0, 0.9),
+                transparent 20%
+            ),
+            radial-gradient(
+                circle at 85% 15%,
+                rgba(0, 255, 255, 0.9),
+                transparent 20%
+            ),
+            radial-gradient(
+                circle at 80% 80%,
+                rgba(255, 0, 255, 0.9),
+                transparent 20%
+            ),
+            radial-gradient(
+                circle at 15% 85%,
+                rgba(0, 255, 100, 0.9),
+                transparent 20%
+            );
+
+        filter: blur(45px);
+
+        transform: scale(1);
+        will-change: transform, opacity, filter;
+    }
+
+    /* =========================
+       DISCO RAYS
+    ========================= */
+
+    .rays {
+        position: absolute;
+        inset: -50%;
+
+        pointer-events: none;
+
+        opacity: 0.25;
+
+        mix-blend-mode: screen;
+
+        background:
+            repeating-conic-gradient(
+                from 0deg,
+                rgba(255, 0, 0, 0.35) 0deg 8deg,
+                rgba(0, 255, 255, 0.35) 8deg 16deg,
+                rgba(255, 0, 255, 0.35) 16deg 24deg,
+                transparent 24deg 35deg
+            );
+
+        filter: blur(12px);
+
+        animation: rotateRays 8s linear infinite;
+
+        will-change: transform, opacity;
+    }
+
+    @keyframes rotateRays {
+        from {
+            transform: rotate(0deg);
         }
 
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: #000;
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* =========================
+       BEAT FLASH
+    ========================= */
+
+    .flash {
+        position: fixed;
+        inset: 0;
+
+        background: white;
+
+        opacity: 0;
+
+        pointer-events: none;
+
+        z-index: 5;
+
+        mix-blend-mode: screen;
+    }
+
+    /* =========================
+       START SCREEN
+    ========================= */
+
+    .start {
+        position: fixed;
+        inset: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        z-index: 20;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(0, 0, 0, 0.05),
+                rgba(0, 0, 0, 0.55)
+            );
+
+        transition:
+            opacity 0.5s ease,
+            visibility 0.5s ease;
+    }
+
+    .start.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .start-button {
+        padding: 17px 34px;
+
+        border: 2px solid rgba(255, 255, 255, 0.85);
+        border-radius: 999px;
+
+        color: white;
+
+        font-family:
+            Arial,
+            sans-serif;
+
+        font-size: 17px;
+        font-weight: 700;
+
+        letter-spacing: 2px;
+
+        background:
+            rgba(0, 0, 0, 0.25);
+
+        backdrop-filter: blur(12px);
+
+        box-shadow:
+            0 0 25px rgba(255, 255, 255, 0.25);
+
+        animation:
+            pulseButton 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulseButton {
+
+        0%,
+        100% {
+            transform: scale(1);
         }
 
-        body {
-            position: relative;
-            cursor: pointer;
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 600px) {
+
+        .start-button {
+            padding: 15px 28px;
+            font-size: 15px;
         }
 
-        img {
-            position: fixed;
-            inset: 0;
-
-            width: 100%;
-            height: 100%;
-
-            object-fit: cover;
-            object-position: center;
-
-            display: block;
+        .disco {
+            filter: blur(30px);
         }
-    </style>
+
+        .rays {
+            opacity: 0.18;
+        }
+    }
+</style>
+
 </head>
 
 <body>
 
-    <img src="image.jpg" alt="">
+<div class="scene">
 
-    <audio id="music" loop>
-        <source src="music.mp3" type="audio/mpeg">
-    </audio>
+    <img
+        class="image"
+        src="image.jpg"
+        alt=""
+    >
 
-    <script>
-        document.addEventListener("click", function () {
-            const music = document.getElementById("music");
+    <div
+        class="rgb red"
+        id="rgbRed">
+    </div>
 
-            music.play().catch(() => {});
-        }, { once: true });
-    </script>
+    <div
+        class="rgb blue"
+        id="rgbBlue">
+    </div>
 
+    <div
+        class="disco"
+        id="disco">
+    </div>
+
+    <div
+        class="rays"
+        id="rays">
+    </div>
+
+</div>
+
+<div
+    class="flash"
+    id="flash">
+</div>
+
+<div
+    class="start"
+    id="start">
+
+    <div class="start-button">
+        ▶ TAP TO START
+    </div>
+
+</div>
+
+<audio
+    id="music"
+    loop
+    preload="auto">
+
+    <source
+        src="FART%20PHONK.mp3"
+        type="audio/mpeg">
+
+</audio>
+
+
+<script>
+
+    const music =
+        document.getElementById("music");
+
+    const start =
+        document.getElementById("start");
+
+    const image =
+        document.querySelector(".image");
+
+    const disco =
+        document.getElementById("disco");
+
+    const rays =
+        document.getElementById("rays");
+
+    const flash =
+        document.getElementById("flash");
+
+    const rgbRed =
+        document.getElementById("rgbRed");
+
+    const rgbBlue =
+        document.getElementById("rgbBlue");
+
+
+    let audioContext = null;
+    let analyser = null;
+    let source = null;
+
+    let frequencyData = null;
+
+    let started = false;
+
+    let lastStrongBeat = 0;
+
+
+    /* =========================
+       START
+    ========================= */
+
+    document.addEventListener(
+        "click",
+        startMusic,
+        {
+            once: true
+        }
+    );
+
+
+    async function startMusic() {
+
+        if (started) {
+            return;
+        }
+
+        started = true;
+
+        start.classList.add("hidden");
+
+        try {
+
+            await music.play();
+
+            audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+            analyser =
+                audioContext.createAnalyser();
+
+            analyser.fftSize = 512;
+
+            analyser.smoothingTimeConstant =
+                0.72;
+
+            frequencyData =
+                new Uint8Array(
+                    analyser.frequencyBinCount
+                );
+
+            source =
+                audioContext.createMediaElementSource(
+                    music
+                );
+
+            source.connect(analyser);
+
+            analyser.connect(
+                audioContext.destination
+            );
+
+            animate();
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+    }
+
+
+    /* =========================
+       AUDIO ANALYSIS
+    ========================= */
+
+    function getBass() {
+
+        let bass = 0;
+
+        /*
+         * فرکانس‌های پایین
+         * برای تشخیص Kick / Bass
+         */
+
+        for (
+            let i = 1;
+            i < 18;
+            i++
+        ) {
+
+            bass += frequencyData[i];
+
+        }
+
+        return bass / 17;
+    }
+
+
+    function getMid() {
+
+        let mid = 0;
+
+        for (
+            let i = 18;
+            i < 80;
+            i++
+        ) {
+
+            mid += frequencyData[i];
+
+        }
+
+        return mid / 62;
+    }
+
+
+    /* =========================
+       VISUALIZER
+    ========================= */
+
+    function animate() {
+
+        requestAnimationFrame(animate);
+
+        if (!analyser) {
+            return;
+        }
+
+        analyser.getByteFrequencyData(
+            frequencyData
+        );
+
+
+        const bass =
+            getBass();
+
+        const mid =
+            getMid();
+
+
+        /*
+         * Normalize
+         */
+
+        const beat =
+            Math.min(
+                bass / 150,
+                1
+            );
+
+        const middle =
+            Math.min(
+                mid / 150,
+                1
+            );
+
+
+        /* =====================
+           IMAGE ZOOM
+        ===================== */
+
+        const zoom =
+            1.02 +
+            beat * 0.075;
+
+        image.style.transform =
+            `scale(${zoom})`;
+
+
+        /* =====================
+           DISCO LIGHT
+        ===================== */
+
+        disco.style.opacity =
+            0.25 +
+            beat * 0.75;
+
+        disco.style.transform =
+            `
+            scale(${1 + beat * 0.35})
+            rotate(${performance.now() * 0.015}deg)
+            `;
+
+        disco.style.filter =
+            `blur(${45 - beat * 20}px)`;
+
+
+        /* =====================
+           LIGHT RAYS
+        ===================== */
+
+        rays.style.opacity =
+            0.15 +
+            middle * 0.5;
+
+        rays.style.transform =
+            `scale(${1 + beat * 0.2})`;
+
+
+        /* =====================
+           RGB GLITCH
+        ===================== */
+
+        const rgbAmount =
+            beat * 22;
+
+        rgbRed.style.transform =
+            `translateX(${-rgbAmount}px)`;
+
+        rgbBlue.style.transform =
+            `translateX(${rgbAmount}px)`;
+
+        rgbRed.style.opacity =
+            beat * 0.35;
+
+        rgbBlue.style.opacity =
+            beat * 0.35;
+
+
+        /* =====================
+           STRONG BEAT FLASH
+        ===================== */
+
+        const now =
+            performance.now();
+
+        if (
+            beat > 0.82 &&
+            now - lastStrongBeat > 100
+        ) {
+
+            lastStrongBeat = now;
+
+            flash.style.opacity =
+                Math.min(
+                    (beat - 0.82) * 1.8,
+                    0.35
+                );
+
+        } else {
+
+            flash.style.opacity =
+                Math.max(
+                    0,
+                    parseFloat(
+                        flash.style.opacity || 0
+                    ) - 0.04
+                );
+
+        }
+
+    }
+
+</script>
 </body>
 </html>
